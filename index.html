@@ -3,19 +3,21 @@
 <head>
 <!--
   ═══════════════════════════════════════════════════════════════
-  META PIXEL — AGUARDANDO CONFIGURAÇÃO DEFINITIVA
+  META PIXEL — CONFIGURADO
   ═══════════════════════════════════════════════════════════════
-  Troque META_PIXEL_ID pelo ID real do pixel quando for configurar.
+  Pixel ID: 1614786343675523
+  Checkout Hotmart: https://pay.hotmart.com/P107499444F
 
-  Eventos previstos nesta página (ver comentários ao longo do HTML):
-  • PageView          → já disparado abaixo, no carregamento da página
-  • ViewContent        → disparar quando a seção de preço entrar em viewport
-                          (ainda não implementado — ver comentário na
-                          <section class="price-section">)
-  • InitiateCheckout   → disparado nos cliques dos botões de compra
-                          (função trackCTA() mais abaixo, no <script> final)
-  • Purchase           → será configurado junto com a integração Hotmart/Meta,
-                          fora do escopo desta página estática
+  Eventos ativos nesta página:
+  • PageView          → disparado no carregamento da página (abaixo)
+  • ViewContent        → disparado 1x quando a seção de preço (#preco)
+                          entra em viewport — IntersectionObserver no
+                          <script> final, função observePriceSection()
+  • InitiateCheckout   → disparado nos cliques dos botões de compra —
+                          função trackCTA() no <script> final
+  • Purchase           → NÃO disparado por esta página estática.
+                          Será tratado pela integração Hotmart/Meta
+                          após a confirmação da compra.
   ═══════════════════════════════════════════════════════════════
 -->
 <script>
@@ -27,11 +29,11 @@ n.queue=[];t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];
 s.parentNode.insertBefore(t,s)}(window, document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', 'META_PIXEL_ID');
+fbq('init', '1614786343675523');
 fbq('track', 'PageView');
 </script>
 <noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=META_PIXEL_ID&ev=PageView&noscript=1"
+src="https://www.facebook.com/tr?id=1614786343675523&ev=PageView&noscript=1"
 /></noscript>
 <!-- Fim Meta Pixel -->
 
@@ -136,11 +138,8 @@ src="https://www.facebook.com/tr?id=META_PIXEL_ID&ev=PageView&noscript=1"
     border-radius: 100px;
   }
   .hero-brand-logo {
-    width: 32px; height: 32px;
-    background: linear-gradient(135deg, var(--lilac) 0%, var(--quartz) 100%);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 800; font-size: 15px; color: var(--bg);
+    height: 26px; width: auto;
+    display: block;
   }
   .hero-brand span { font-size: 12px; font-weight: 700; letter-spacing: .04em; color: var(--texto); text-transform: uppercase; }
   .hero-endorse { position: relative; font-size: 11px; color: var(--texto2); font-weight: 600; letter-spacing: .03em; margin-bottom: 22px; }
@@ -256,7 +255,24 @@ src="https://www.facebook.com/tr?id=META_PIXEL_ID&ev=PageView&noscript=1"
   .modules-section { padding: 76px 20px; background: var(--bg-alt); text-align: center; }
   .modules-section h2 { font-weight: 800; font-size: clamp(26px, 5vw, 44px); line-height: 1.16; max-width: 760px; margin: 0 auto 14px; }
   .modules-section h2 em { font-style: normal; background: linear-gradient(90deg, var(--lilac-soft), var(--quartz)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .modules-desc { color: var(--texto); max-width: 580px; margin: 0 auto 48px; font-size: 15px; }
+  .modules-desc { color: var(--texto); max-width: 580px; margin: 0 auto 32px; font-size: 15px; }
+
+  .system-formula {
+    display: flex; align-items: center; justify-content: center;
+    gap: 10px; flex-wrap: wrap;
+    max-width: 680px; margin: 0 auto 48px;
+  }
+  .system-formula .sf-part {
+    background: var(--card); border: 1px solid var(--border); border-top: 2px solid var(--lilac-soft);
+    color: var(--texto); font-size: 12px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase;
+    padding: 9px 16px; border-radius: 0 0 10px 10px;
+  }
+  .system-formula .sf-op { color: var(--lilac-soft); font-weight: 800; font-size: 14px; }
+  .system-formula .sf-result {
+    color: var(--branco); font-size: 12px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase;
+    background: linear-gradient(90deg, var(--lilac), var(--lilac-soft));
+    padding: 9px 16px; border-radius: 100px;
+  }
 
   .modules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 980px; margin: 0 auto; }
   .module-card {
@@ -274,7 +290,7 @@ src="https://www.facebook.com/tr?id=META_PIXEL_ID&ev=PageView&noscript=1"
     display: inline-flex; align-items: center; justify-content: center;
     width: 40px; height: 40px; border-radius: 12px;
     background: linear-gradient(135deg, var(--lilac), var(--quartz));
-    color: var(--bg); font-weight: 800; font-size: 16px;
+    color: var(--bg); font-weight: 800; font-size: 14px;
     margin-bottom: 18px;
   }
   .module-card h3 { font-size: 19px; font-weight: 800; margin-bottom: 6px; }
@@ -402,6 +418,30 @@ src="https://www.facebook.com/tr?id=META_PIXEL_ID&ev=PageView&noscript=1"
     display: flex; align-items: center; gap: 8px;
   }
 
+  /* ── VÍDEO DEMONSTRATIVO (dentro do hero, acima do 1º CTA) ── */
+  .hero-video-caption { position: relative; font-size: 13px; font-weight: 700; color: var(--lilac-soft); letter-spacing: .02em; margin-bottom: 14px; }
+  .video-frame-wrap {
+    max-width: 340px; margin: 0 auto;
+    background: var(--card); border: 1px solid var(--border); border-radius: 24px;
+    padding: 10px; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+  }
+  .hero-video-wrap { position: relative; margin-bottom: 32px; }
+  .video-frame-wrap video { width: 100%; height: auto; display: block; border-radius: 16px; background: #000; }
+
+  /* ── TUDO O QUE VOCÊ RECEBE ── */
+  .whats-included-section { padding: 76px 20px; background: var(--bg-alt); text-align: center; }
+  .whats-included-section h2 { font-weight: 800; font-size: clamp(26px, 4.8vw, 42px); line-height: 1.16; margin-bottom: 12px; }
+  .whats-included-section h2 em { font-style: normal; background: linear-gradient(90deg, var(--lilac-soft), var(--quartz)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .whats-included-sub { color: var(--texto); font-size: 15px; margin-bottom: 40px; max-width: 520px; margin-left: auto; margin-right: auto; }
+  .included-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; max-width: 780px; margin: 0 auto; text-align: left; }
+  .included-item {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 16px 18px; font-size: 14px; color: var(--texto); font-weight: 600;
+  }
+  .included-item .check { color: var(--quartz); font-size: 16px; font-weight: 800; flex-shrink: 0; }
+  .included-item strong { color: var(--branco); }
+
   /* ── PREÇO ── */
   .price-section { padding: 80px 20px; text-align: center; position: relative; overflow: hidden; }
   .price-section::before {
@@ -429,6 +469,13 @@ src="https://www.facebook.com/tr?id=META_PIXEL_ID&ev=PageView&noscript=1"
     padding: 5px 14px; border-radius: 100px; display: inline-block; margin-bottom: 18px;
   }
   .price-old { font-size: 18px; color: var(--texto2); text-decoration: line-through; margin-bottom: 4px; }
+  .price-breakdown { list-style: none; margin-bottom: 14px; text-align: left; }
+  .price-breakdown li {
+    display: flex; justify-content: space-between; gap: 12px;
+    font-size: 13px; color: var(--texto2); padding: 6px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .price-breakdown li span:last-child { color: var(--texto); font-weight: 700; }
   .price-main { font-weight: 800; font-size: 68px; background: linear-gradient(90deg, var(--lilac-soft), var(--quartz)); -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1; margin-bottom: 6px; }
   .price-main sub { font-size: 28px; }
   .price-notice { background: rgba(168,85,247,0.08); border: 1px solid rgba(192,132,252,0.22); border-radius: 12px; padding: 11px 14px; font-size: 13px; color: var(--lilac-soft); font-weight: 700; margin-bottom: 26px; line-height: 1.4; }
@@ -483,7 +530,7 @@ src="https://www.facebook.com/tr?id=META_PIXEL_ID&ev=PageView&noscript=1"
 <section class="hero">
 
   <div class="hero-brand">
-    <div class="hero-brand-logo">B</div>
+    <img class="hero-brand-logo" src="data:image/png;base64,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" alt="Bastidor do Empreendedor">
     <span>Sistema Beleza Lucrativa</span>
   </div>
   <div class="hero-endorse">por Bastidor do Empreendedor</div>
@@ -496,7 +543,22 @@ src="https://www.facebook.com/tr?id=META_PIXEL_ID&ev=PageView&noscript=1"
     Entre materiais, descartáveis, taxas, pacotes, horários ocupados e contas pessoais, é fácil receber o dinheiro e não saber quanto realmente ficou. O <strong>Beleza Lucrativa</strong> foi criado para ajudar profissionais da beleza a precificar seus atendimentos, organizar sua agenda e cuidar do dinheiro — sem precisar entender de finanças.
   </p>
 
-  <a href="HOTMART_CHECKOUT_URL" target="_blank" class="btn-cta" onclick="trackCTA('InitiateCheckout')">
+  <!--
+    VÍDEO DEMONSTRATIVO — logo acima do primeiro botão de compra
+    ---------------------------------------------
+    Arquivo de vídeo referenciado externamente (NÃO embutido em base64 —
+    9,5 MB deixaria o HTML pesado demais). Coloque o arquivo em:
+    video/sistema-beleza-lucrativa-demo.mp4
+    no mesmo diretório do HTML publicado (irmão da pasta onde o HTML fica).
+  -->
+  <p class="hero-video-caption">🎬 Veja o sistema por dentro, em menos de 1 minuto</p>
+  <div class="video-frame-wrap hero-video-wrap">
+    <video controls preload="metadata" playsinline>
+      <source src="video/sistema-beleza-lucrativa-demo.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <a href="https://pay.hotmart.com/P107499444F" target="_blank" class="btn-cta" onclick="trackCTA('InitiateCheckout')">
     Quero deixar meu negócio mais lucrativo
     <small>R$ 67 · Acesso vitalício · Sem mensalidade</small>
   </a>
@@ -531,11 +593,21 @@ src="https://www.facebook.com/tr?id=META_PIXEL_ID&ev=PageView&noscript=1"
 <section class="modules-section">
   <span class="section-tag">✨ SISTEMA BELEZA LUCRATIVA</span>
   <h2>3 ferramentas complementares para cuidar dos <em>três números que mais importam</em></h2>
-  <p class="modules-desc">Quanto cobrar. Quanto o negócio realmente deixa. Quanto desse dinheiro chega até você. Para quem trabalha com cílios, unhas, sobrancelhas, estética, massagem, procedimentos faciais, corporais e outros atendimentos de beleza.</p>
+  <p class="modules-desc">Quanto cobrar. Quanto da agenda já está comprometido. Quanto desse dinheiro chega até você. Para quem trabalha com cílios, unhas, sobrancelhas, estética, massagem, procedimentos faciais, corporais e outros atendimentos de beleza.</p>
+
+  <div class="system-formula">
+    <span class="sf-part">01 · Preço</span>
+    <span class="sf-op">+</span>
+    <span class="sf-part">02 · Agenda</span>
+    <span class="sf-op">+</span>
+    <span class="sf-part">03 · Dinheiro</span>
+    <span class="sf-op">=</span>
+    <span class="sf-result">Sistema Beleza Lucrativa</span>
+  </div>
 
   <div class="modules-grid">
     <div class="module-card">
-      <div class="module-num">1</div>
+      <div class="module-num">01</div>
       <h3>Minha Precificação</h3>
       <div class="module-tagline">Quanto cobrar</div>
       <p>Descubra quanto cola, fios, descartáveis, esmalte e outros produtos realmente custam em cada atendimento — e qual o preço mínimo e sugerido para não trabalhar de graça. Indicada principalmente para quem atende individualmente: Lash, Manicure, Nail Designer e Sobrancelha.</p>
@@ -546,9 +618,9 @@ src="https://www.facebook.com/tr?id=META_PIXEL_ID&ev=PageView&noscript=1"
       </ul>
     </div>
     <div class="module-card">
-      <div class="module-num">2</div>
+      <div class="module-num">02</div>
       <h3>Minha Agenda Lucrativa</h3>
-      <div class="module-tagline">Quanto o negócio realmente deixa</div>
+      <div class="module-tagline">Quanto da agenda já está comprometido</div>
       <p>Saiba quantas sessões sua cliente comprou, quantas já realizou e quantas ainda faltam — sem perder de vista as horas da sua agenda que já foram vendidas e quantos horários ainda podem virar novas vendas. Indicada principalmente para Estética, Massoterapia e quem trabalha com sessões e pacotes.</p>
       <ul class="module-list">
         <li>Sessões contratadas vs. já realizadas</li>
@@ -557,7 +629,7 @@ src="https://www.facebook.com/tr?id=META_PIXEL_ID&ev=PageView&noscript=1"
       </ul>
     </div>
     <div class="module-card">
-      <div class="module-num">3</div>
+      <div class="module-num">03</div>
       <h3>Meu Financeiro</h3>
       <div class="module-tagline">Quanto chega até você</div>
       <p>Organize o pró-labore que você tira do seu negócio, suas contas, parcelas e metas pessoais — sem misturar com o caixa do estúdio. Não é controle empresarial: é a ferramenta que ajuda você a organizar o que já entrou no seu bolso.</p>
@@ -647,7 +719,7 @@ src="https://www.facebook.com/tr?id=META_PIXEL_ID&ev=PageView&noscript=1"
     <div class="showcase-text">
       <div class="showcase-num">3</div>
       <h3>Veja quanto realmente sobra para você</h3>
-      <p>Acompanhe entradas e saídas, defina seu pró-labore e visualize quanto pertence ao negócio e quanto pode ir para o seu bolso.</p>
+      <p>Depois de definir seu pró-labore, acompanhe quanto já está comprometido, quanto pode gastar e quanto pode guardar — sem misturar com o caixa do estúdio.</p>
     </div>
   </div>
 </section>
@@ -694,7 +766,7 @@ src="https://www.facebook.com/tr?id=META_PIXEL_ID&ev=PageView&noscript=1"
       <ul class="avd-list">
         <li>Preço com base no minuto de trabalho e nos insumos reais</li>
         <li>Dinheiro do pacote guardado até a sessão acontecer de fato</li>
-        <li>Pró-labore definido e resultado do negócio visível todo mês</li>
+        <li>Pró-labore definido e visão clara de quanto pode guardar todo mês</li>
       </ul>
     </div>
   </div>
@@ -702,7 +774,7 @@ src="https://www.facebook.com/tr?id=META_PIXEL_ID&ev=PageView&noscript=1"
 
 <div class="mid-cta">
   <p>Se você já vendeu um pacote e "sumiu" o dinheiro antes de terminar as sessões, faz sentido testar.</p>
-  <a href="HOTMART_CHECKOUT_URL" target="_blank" class="btn-cta" onclick="trackCTA('InitiateCheckout')">
+  <a href="https://pay.hotmart.com/P107499444F" target="_blank" class="btn-cta" onclick="trackCTA('InitiateCheckout')">
     Quero organizar minha agenda e meu dinheiro
     <small>R$ 67 · Acesso vitalício · Sem mensalidade</small>
   </a>
@@ -746,12 +818,25 @@ src="https://www.facebook.com/tr?id=META_PIXEL_ID&ev=PageView&noscript=1"
   </div>
 </section>
 
-<!--
-  ViewContent (Meta Pixel) — sugestão de implementação futura:
-  disparar quando esta <section class="price-section"> entrar em viewport
-  (ex: IntersectionObserver chamando trackCTA('ViewContent')).
-  Não implementado agora — Pixel ainda não configurado (ver comentário no <head>).
--->
+<!-- TUDO O QUE VOCÊ RECEBE -->
+<section class="whats-included-section">
+  <span class="section-tag">📦 TUDO O QUE VOCÊ RECEBE</span>
+  <h2>Um <em>sistema completo</em>, não pedaços soltos</h2>
+  <p class="whats-included-sub">As 3 ferramentas, os 3 manuais de uso e acesso vitalício — tudo em um único pacote.</p>
+  <div class="included-grid">
+    <div class="included-item"><span class="check">✓</span><span><strong>Minha Precificação</strong> — quanto cobrar por atendimento</span></div>
+    <div class="included-item"><span class="check">✓</span><span><strong>Minha Agenda Lucrativa</strong> — controle de pacotes e sessões</span></div>
+    <div class="included-item"><span class="check">✓</span><span><strong>Meu Financeiro</strong> — pró-labore e dinheiro pessoal</span></div>
+    <div class="included-item"><span class="check">✓</span><span>Manual da Minha Precificação</span></div>
+    <div class="included-item"><span class="check">✓</span><span>Manual da Minha Agenda Lucrativa</span></div>
+    <div class="included-item"><span class="check">✓</span><span>Manual do Meu Financeiro</span></div>
+    <div class="included-item"><span class="check">✓</span><span>Acesso vitalício</span></div>
+    <div class="included-item"><span class="check">✓</span><span>Pagamento único</span></div>
+    <div class="included-item"><span class="check">✓</span><span>Sem mensalidade</span></div>
+  </div>
+</section>
+
+<!-- ViewContent implementado via IntersectionObserver no <script> final (observa #preco) -->
 <!-- PREÇO -->
 <section class="price-section" id="preco">
   <span class="section-tag">💸 INVESTIMENTO</span>
@@ -760,6 +845,13 @@ src="https://www.facebook.com/tr?id=META_PIXEL_ID&ev=PageView&noscript=1"
 
   <div class="price-box">
     <div class="price-launch-badge">✨ Condição de lançamento</div>
+
+    <ul class="price-breakdown">
+      <li><span>Minha Precificação</span><span>R$ 49</span></li>
+      <li><span>Minha Agenda Lucrativa</span><span>R$ 49</span></li>
+      <li><span>Meu Financeiro</span><span>R$ 49</span></li>
+    </ul>
+
     <div class="price-old">De R$ 147,00</div>
     <div class="price-main"><sub>R$</sub>67</div>
 
@@ -767,7 +859,7 @@ src="https://www.facebook.com/tr?id=META_PIXEL_ID&ev=PageView&noscript=1"
       ✅ Sem mensalidade. Pagamento único com acesso vitalício às 3 ferramentas.
     </div>
 
-    <a href="HOTMART_CHECKOUT_URL" target="_blank" class="btn-cta" onclick="trackCTA('InitiateCheckout')" style="display:block; text-align:center; margin-bottom:20px;">
+    <a href="https://pay.hotmart.com/P107499444F" target="_blank" class="btn-cta" onclick="trackCTA('InitiateCheckout')" style="display:block; text-align:center; margin-bottom:20px;">
       Quero o Sistema Beleza Lucrativa
       <small>🔒 Compra 100% segura · Acesso imediato por e-mail</small>
     </a>
@@ -776,7 +868,7 @@ src="https://www.facebook.com/tr?id=META_PIXEL_ID&ev=PageView&noscript=1"
       <li>Minha Precificação — quanto cobrar por atendimento</li>
       <li>Minha Agenda Lucrativa — controle de pacotes e sessões</li>
       <li>Meu Financeiro — pró-labore e dinheiro pessoal</li>
-      <li>Planilhas em Excel, compatíveis com Google Sheets</li>
+      <li>Planilhas em Excel</li>
       <li>Acesso vitalício — sem mensalidade</li>
     </ul>
 
@@ -803,10 +895,6 @@ src="https://www.facebook.com/tr?id=META_PIXEL_ID&ev=PageView&noscript=1"
     <div class="faq-a">Não. Você só preenche os campos indicados — o cálculo do custo por minuto, do controle de pacotes e do pró-labore já está pronto por trás.</div>
   </div>
   <div class="faq-item">
-    <button class="faq-q" onclick="toggleFaq(this)">Funciona no Google Sheets? <span class="arr">▶</span></button>
-    <div class="faq-a">Sim. As planilhas funcionam tanto no Microsoft Excel quanto no Google Sheets.</div>
-  </div>
-  <div class="faq-item">
     <button class="faq-q" onclick="toggleFaq(this)">Como recebo após a compra? <span class="arr">▶</span></button>
     <div class="faq-a">O acesso é enviado por e-mail logo após a confirmação do pagamento na Hotmart, com as 3 ferramentas prontas para uso.</div>
   </div>
@@ -820,7 +908,7 @@ src="https://www.facebook.com/tr?id=META_PIXEL_ID&ev=PageView&noscript=1"
 <section class="final-cta">
   <h2>Chega de encher a agenda<br><em>sem saber quanto sobra pra você</em></h2>
   <p>Você não precisa entender de finanças. Precisa só de uma ferramenta que mostre quanto cobrar, quanto o negócio realmente deixa e quanto desse dinheiro chega até você.</p>
-  <a href="HOTMART_CHECKOUT_URL" target="_blank" class="btn-cta" onclick="trackCTA('InitiateCheckout')">
+  <a href="https://pay.hotmart.com/P107499444F" target="_blank" class="btn-cta" onclick="trackCTA('InitiateCheckout')">
     Quero deixar meu negócio mais lucrativo
     <small>R$ 67 · Acesso vitalício · Garantia de 7 dias</small>
   </a>
@@ -828,13 +916,18 @@ src="https://www.facebook.com/tr?id=META_PIXEL_ID&ev=PageView&noscript=1"
 
 <!-- FOOTER -->
 <footer>
-  <p>© 2026 Sistema Beleza Lucrativa. Todos os direitos reservados.</p>
-  <p style="margin-top:8px;"><a href="#">Política de Privacidade</a> · <a href="#">Termos de Uso</a> · <a href="#">Suporte</a></p>
+  <p>© 2026 Sistema Beleza Lucrativa — um produto Bastidor do Empreendedor.</p>
+  <!--
+    PENDENTE: URLs reais de Política de Privacidade, Termos de Uso e Suporte
+    ainda não foram fornecidas. Os hrefs abaixo estão marcados como
+    PENDENTE_LINK_* propositalmente — substitua por URLs reais antes de publicar.
+  -->
+  <p style="margin-top:8px;"><a href="PENDENTE_LINK_PRIVACIDADE">Política de Privacidade</a> · <a href="PENDENTE_LINK_TERMOS">Termos de Uso</a> · <a href="PENDENTE_LINK_SUPORTE">Suporte</a></p>
 </footer>
 
 <!-- STICKY CTA MOBILE -->
 <div class="sticky-cta">
-  <a href="HOTMART_CHECKOUT_URL" target="_blank" onclick="trackCTA('InitiateCheckout')">💜 QUERO O SISTEMA — R$ 67</a>
+  <a href="https://pay.hotmart.com/P107499444F" target="_blank" onclick="trackCTA('InitiateCheckout')">💜 QUERO O SISTEMA — R$ 67</a>
 </div>
 
 <script>
@@ -844,6 +937,24 @@ src="https://www.facebook.com/tr?id=META_PIXEL_ID&ev=PageView&noscript=1"
   function trackCTA(eventName) {
     if (typeof fbq === 'function') { fbq('track', eventName); }
   }
+
+  // ViewContent — dispara 1x quando a seção de preço (#preco) entra em viewport.
+  // IntersectionObserver evita disparo duplicado (observer é desconectado após o 1º disparo).
+  (function observePriceSection() {
+    const priceSection = document.getElementById('preco');
+    if (!priceSection || typeof IntersectionObserver !== 'function') return;
+    let fired = false;
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !fired) {
+          fired = true;
+          trackCTA('ViewContent');
+          observer.disconnect();
+        }
+      });
+    }, { threshold: 0.3 });
+    observer.observe(priceSection);
+  })();
 
   function toggleFaq(btn) {
     const answer = btn.nextElementSibling;
